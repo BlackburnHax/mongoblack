@@ -1,5 +1,5 @@
 # mongoblack
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![pypi](https://img.shields.io/pypi/v/mongoblack.svg)](https://pypi.org/project/mongoblack/) [![wheel](https://img.shields.io/pypi/wheel/mongoblack.svg)](https://pypi.org/project/mongoblack/)
 > MongoDB handlers to streamline application interfaces
 
 
