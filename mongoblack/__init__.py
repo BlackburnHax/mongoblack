@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 import time
-from pymongo import MongoClient, errors
+from pymongo import MongoClient, errors, response, cursor
 from socket import error as GenericSocketError
+from typing import Union
 
 """mongoblack: MongoDB handlers to streamline application interfaces"""
 
@@ -26,7 +27,7 @@ __license__ = "Apache 2.0"
 #  For a human-readable & fast explanation of the Apache 2.0 license visit:  http://www.tldrlegal.com/l/apache2
 
 class Connection:
-    def __init__(self, instance, user, password, mdb_string, **kwargs):
+    def __init__(self, instance: str, user: str, password: str, mdb_string: str, **kwargs: object):
         """
         :param instance: MongoDB server instance name
         :param user: MongoDB instance user name
@@ -123,7 +124,7 @@ class Connection:
         return wrapped
 
     @_retry
-    def write(self, collection, dictionary, key):
+    def write(self, collection: str, dictionary: dict, key: Union[str, int]) -> response:
         """
         Writes the dictionary inside the document identified by the key, within the specified collection.
         Creates the document if one does not already exist, updates the document if it does exist.
@@ -137,7 +138,7 @@ class Connection:
         )
 
     @_retry
-    def write_new(self, collection, dictionary):
+    def write_new(self, collection: str, dictionary: dict) -> response:
         """
         Writes the given dictionary as a new document within the provided collection using a generative key.
         :param collection: Collection to use
@@ -147,7 +148,7 @@ class Connection:
         return self.db[collection].insert_one(dictionary)
 
     @_retry
-    def overwrite(self, collection, dictionary, key):
+    def overwrite(self, collection: str, dictionary: dict, key: Union[str, int]) -> response:
         """
         Overwrites the given document within the provided collection.
         :param collection: Collection to use
@@ -158,7 +159,7 @@ class Connection:
         return self.db[collection].replace_one({"_id": key}, dictionary)
 
     @_retry
-    def get(self, collection, key):
+    def get(self, collection: str, key: Union[str, int]) -> response:
         """
         Retrieve a document in the given collection specified by the key
         :param collection: Collection to use
@@ -169,7 +170,7 @@ class Connection:
         return self.db[collection].find_one({"_id": key})
 
     @_retry
-    def delete(self, collection, key):
+    def delete(self, collection: str, key: Union[str, int]) -> response:
         """
         Delete the document in the given collection specified by the key
         :param collection: Collection to use
@@ -180,7 +181,7 @@ class Connection:
         return self.db[collection].delete_one({"_id": key})
 
     @_retry
-    def delete_branch(self, collection, key, branch):
+    def delete_branch(self, collection: str, key: Union[str, int], branch: Union[str, int]) -> response:
         """
         Delete the document branch in the given key
         :param collection: Collection to use
@@ -193,7 +194,7 @@ class Connection:
 
 
     @_retry
-    def get_all(self, collection, query=None):
+    def get_all(self, collection: str, query: str = None) -> cursor:
         """
         Retrieve all matching documents in the given collection.
         If query is not specified, pulls all documents in the collection
@@ -207,7 +208,7 @@ class Connection:
             return self.db[collection].find(query, batch_size=0)
 
     @_retry
-    def count(self, collection, query=None):
+    def count(self, collection: str, query: str = None) -> int:
         """
         Retrieve a count of all matching documents in the given collection.
         If query is not specified, counts all documents in the collection
@@ -221,7 +222,7 @@ class Connection:
             return self.db[collection].count_documents(query)
 
     @_retry
-    def copy(self, source, destination):
+    def copy(self, source: str, destination: str) -> response:
         """
         Copies the entire contents of a collection to a new destination collection
         :param source: Collection to copy
@@ -232,7 +233,7 @@ class Connection:
         return self.db[source].aggregate(operation)
 
     @_retry
-    def new_reference_collection(self, source, destination):
+    def new_reference_collection(self, source: str, destination: str) -> response:
         """
         Copies just the reference keys of an entire collection to a new destination collection.
         This operation is much faster than a full copy()

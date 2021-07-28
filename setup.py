@@ -3,12 +3,12 @@ from setuptools import setup
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(HERE, "README.md")) as fid:
+with open(os.path.join(HERE, "README.md"), encoding="utf8") as fid:
     README = fid.read()
 
 setup(
     name="mongoblack",
-    version="0.0.2",
+    version="1.0.0",
     description="MongoDB handlers to streamline application interfaces",
     long_description=README,
     long_description_content_type="text/markdown",
