@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin bash
 # Use this Bash script to build a local docker image for the project
 
 # Run ./docker_build.sh for creating image project:latest or run ./docker_build.sh your_tag to specify image tag.
