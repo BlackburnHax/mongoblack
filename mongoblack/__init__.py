@@ -26,6 +26,7 @@ __license__ = "Apache 2.0"
 #  TL;DR:
 #  For a human-readable & fast explanation of the Apache 2.0 license visit:  http://www.tldrlegal.com/l/apache2
 
+
 class Connection:
     def __init__(self, instance: str, user: str, password: str, mdb_string: str, **kwargs: object):
         """
@@ -63,7 +64,7 @@ class Connection:
         if not isinstance(tls, bool):
             raise ValueError("tls keyword must be a string")
 
-        self.retries = kwargs.get("retries", 5)
+        self.retries = kwargs.get("retries", -1)
         if isinstance(self.retries, int):
             if not self.retries >= -1:
                 raise ValueError("retries keyword must be greater than or equal to -1 or left undefined")
@@ -90,7 +91,6 @@ class Connection:
             tz_aware=True,
         )
         self.db = self.server[instance]
-
 
     def _retry(func):
         def wrapped(*args, **kwargs):
@@ -121,6 +121,7 @@ class Connection:
                     print("Unspecified network socket error in database connection. Retrying connection...")
                 time.sleep(args[0].timeout)
             raise ConnectionError(f"Unable to connect to database after {attempts} attempts.")
+
         return wrapped
 
     @_retry
@@ -133,9 +134,7 @@ class Connection:
         :param key: Key to use when writing
         :return:
         """
-        return self.db[collection].update_one(
-            {"_id": key}, {"$set": dictionary}, upsert=True
-        )
+        return self.db[collection].update_one({"_id": key}, {"$set": dictionary}, upsert=True)
 
     @_retry
     def write_new(self, collection: str, dictionary: dict) -> response:
@@ -192,7 +191,6 @@ class Connection:
         """
         return self.db[collection].update_one({"_id": key}, {"$unset": {branch: 1}})
 
-
     @_retry
     def get_all(self, collection: str, query: str = None) -> cursor:
         """
@@ -229,7 +227,7 @@ class Connection:
         :param destination: Name of new collection to create
         :return: aggregation result
         """
-        operation = [{"$match": {}},{"$out": destination}]
+        operation = [{"$match": {}}, {"$out": destination}]
         return self.db[source].aggregate(operation)
 
     @_retry
