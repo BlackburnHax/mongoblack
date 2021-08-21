@@ -8,7 +8,7 @@ with open(os.path.join(HERE, "README.md"), encoding="utf8") as fid:
 
 setup(
     name="mongoblack",
-    version="1.0.3",
+    version="1.0.4",
     description="MongoDB handlers to streamline application interfaces",
     long_description=README,
     long_description_content_type="text/markdown",

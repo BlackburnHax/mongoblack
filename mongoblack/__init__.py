@@ -101,6 +101,8 @@ class Connection:
                     return func(*args, **kwargs)
                 except errors.BulkWriteError:
                     raise InterruptedError("Bulk write operation failed.")
+                except errors.WriteError:
+                    raise InterruptedError("Write operation failed.")
                 except errors.InvalidURI:
                     raise ConnectionAbortedError("Provided mdb_string is invalid.")
                 except errors.ConfigurationError:
@@ -245,3 +247,5 @@ class Connection:
             {"$out": destination},
         ]
         return self.db[source].aggregate(operation)
+
+    copy_reference = new_reference_collection
